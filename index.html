@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安筑AI — 建筑施工安全智能合规审查系统</title>
+<style>
+:root{--pri:#1a56db;--pri-l:#e8eefb;--red:#dc2626;--red-l:#fef2f2;--org:#d97706;--org-l:#fffbeb;--grn:#059669;--grn-l:#ecfdf5;--inf:#6366f1;--inf-l:#eef2ff;--bg:#f3f4f6;--w:#fff;--tx:#111827;--tx2:#6b7280;--bd:#e5e7eb;--sh:0 1px 3px rgba(0,0,0,.1);--r:10px;--f:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.6;-webkit-font-smoothing:antialiased}
+button{font-family:var(--f);cursor:pointer;border:none;outline:none}
+input,select,textarea{font-family:var(--f);outline:none}
+
+.header{background:var(--w);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
+.header-in{max-width:1200px;margin:0 auto;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-size:1.1rem;font-weight:700}
+.logo-icon{width:32px;height:32px;background:var(--pri);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1rem}
+.logo span{color:var(--pri)}
+.hnav{display:flex;gap:6px}
+.hbtn{padding:6px 16px;border-radius:6px;font-size:.8rem;font-weight:500;background:var(--bg);color:var(--tx2);transition:all .2s}
+.hbtn:hover{background:var(--pri-l);color:var(--pri)}
+.hbtn.on{background:var(--pri);color:#fff}
+
+.main{max-width:1200px;margin:0 auto;padding:24px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.sc{background:var(--w);border-radius:var(--r);padding:18px;border:1px solid var(--bd);box-shadow:var(--sh)}
+.sc .lb{font-size:.8rem;color:var(--tx2);margin-bottom:2px}
+.sc .vl{font-size:1.6rem;font-weight:700}
+.sc .vl.bl{color:var(--pri)}.sc .vl.rd{color:var(--red)}.sc .vl.gn{color:var(--grn)}.sc .vl.og{color:var(--org)}
+.sc .su{font-size:.72rem;color:var(--tx2);margin-top:2px}
+
+.pg{display:none}.pg.on{display:block}
+
+.card{background:var(--w);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);margin-bottom:20px}
+.card-h{padding:14px 20px;border-bottom:1px solid var(--bd);font-weight:600;font-size:.9rem;display:flex;justify-content:space-between;align-items:center}
+.card-b{padding:20px}
+
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.fl{font-size:.8rem;font-weight:500;color:var(--tx2)}
+.fi,.fsel,.fta{padding:9px 12px;border:1px solid var(--bd);border-radius:8px;font-size:.85rem;background:var(--w);color:var(--tx);transition:border-color .2s}
+.fi:focus,.fsel:focus,.fta:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
+.fta{resize:vertical;min-height:70px}
+
+.btn{padding:9px 22px;border-radius:8px;font-size:.85rem;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-p{background:var(--pri);color:#fff}.btn-p:hover{background:#1444b3}
+.btn-d{background:var(--red);color:#fff}.btn-d:hover{background:#b91c1c}
+.btn-o{background:transparent;border:1px solid var(--bd);color:var(--tx2)}.btn-o:hover{border-color:var(--pri);color:var(--pri)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+
+.steps{display:flex;align-items:center;gap:0;margin-bottom:24px;background:var(--w);border-radius:var(--r);padding:14px 18px;border:1px solid var(--bd)}
+.stp{display:flex;align-items:center;gap:7px;flex:1}
+.stp-n{width:26px;height:26px;border-radius:50%;background:var(--bd);color:var(--tx2);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:600;transition:all .3s}
+.stp-l{font-size:.78rem;color:var(--tx2);font-weight:500;transition:color .3s}
+.stp.on .stp-n{background:var(--pri);color:#fff}.stp.on .stp-l{color:var(--pri)}
+.stp.dn .stp-n{background:var(--grn);color:#fff}.stp.dn .stp-l{color:var(--grn)}
+.stp-ln{width:20px;height:2px;background:var(--bd);flex-shrink:0;transition:background .3s}
+.stp-ln.dn{background:var(--grn)}
+
+.cli{padding:12px 14px;border:1px solid var(--bd);border-radius:8px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;transition:background .15s}
+.cli:hover{background:#fafafa}
+.ci{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:.72rem;font-weight:700}
+.ci.pass{background:var(--grn-l);color:var(--grn)}.ci.fail{background:var(--red-l);color:var(--red)}.ci.warn{background:var(--org-l);color:var(--org)}.ci.info{background:var(--inf-l);color:var(--inf)}
+.cc{flex:1}.cc .t{font-size:.85rem;font-weight:500;margin-bottom:1px}.cc .d{font-size:.78rem;color:var(--tx2)}.cc .r{font-size:.72rem;color:var(--pri);margin-top:3px;font-weight:500}
+
+.hz-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.hz-card{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;transition:box-shadow .2s}
+.hz-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.hz-hd{padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.hz-hd .nm{font-weight:600;font-size:.85rem}
+.rtag{padding:2px 9px;border-radius:10px;font-size:.68rem;font-weight:600}
+.rtag.red{background:var(--red-l);color:var(--red)}.rtag.orange{background:var(--org-l);color:var(--org)}.rtag.yellow{background:#fef9c3;color:#854d0e}.rtag.blue{background:var(--inf-l);color:var(--inf)}
+.hz-bd{padding:0 14px 10px;font-size:.78rem;color:var(--tx2)}
+
+.rpt{background:#f9fafb;border:1px solid var(--bd);border-radius:var(--r);padding:28px;font-size:.85rem;line-height:1.8}
+.rpt h2{font-size:1.2rem;text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--tx)}
+.rpt h3{font-size:.95rem;margin:14px 0 6px;color:var(--pri)}
+.rpt table{width:100%;border-collapse:collapse;margin:10px 0}
+.rpt th,.rpt td{padding:7px 10px;border:1px solid var(--bd);text-align:left;font-size:.78rem}
+.rpt th{background:var(--pri-l);font-weight:600}
+.rpt .ft{margin-top:20px;padding-top:14px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;font-size:.78rem;color:var(--tx2)}
+
+.ld{display:none;position:fixed;inset:0;z-index:999;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.ld.on{display:flex}
+.sp{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-t{font-size:.9rem;color:var(--tx2)}
+
+@media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr}.hz-list{grid-template-columns:1fr}.stp-ln{display:none}}
+</style>
+</head>
+<body>
+<div class="header"><div class="header-in">
+<div class="logo"><div class="logo-icon">安</div>安筑<span>AI</span></div>
+<div class="hnav">
+<button class="hbtn on" onclick="swPg('scene')">合规审查</button>
+<button class="hbtn" onclick="swPg('hazard')">隐患识别</button>
+<button class="hbtn" onclick="swPg('report')">报告中心</button>
+</div>
+</div></div>
+
+<div class="ld" id="ld"><div class="sp"></div><div class="ld-t" id="ldTxt">正在分析中...</div></div>
+
+<div class="main">
+<div class="stats">
+<div class="sc"><div class="lb">审查任务</div><div class="vl bl" id="s1">0</div><div class="su">累计完成</div></div>
+<div class="sc"><div class="lb">检出隐患</div><div class="vl rd" id="s2">0</div><div class="su">发现问题</div></div>
+<div class="sc"><div class="lb">规范覆盖率</div><div class="vl gn" id="s3">0%</div><div class="su">条文检查</div></div>
+<div class="sc"><div class="lb">合规率</div><div class="vl og" id="s4">0%</div><div class="su">整体评分</div></div>
+</div>
+
+<!-- 合规审查页 -->
+<div class="pg on" id="pg-scene">
+<div class="steps">
+<div class="stp on" id="st1"><div class="stp-n">1</div><div class="stp-l">场景输入</div></div><div class="stp-ln" id="ln1"></div>
+<div class="stp" id="st2"><div class="stp-n">2</div><div class="stp-l">规范检索</div></div><div class="stp-ln" id="ln2"></div>
+<div class="stp" id="st3"><div class="stp-n">3</div><div class="stp-l">隐患评估</div></div><div class="stp-ln" id="ln3"></div>
+<div class="stp" id="st4"><div class="stp-n">4</div><div class="stp-l">生成报告</div></div>
+</div>
+
+<div class="card">
+<div class="card-h">施工场景信息 <button class="btn btn-sm btn-o" onclick="fillDemo()">填入示例</button></div>
+<div class="card-b">
+<div class="fgrid">
+<div class="fg"><label class="fl">施工阶段</label><select class="fsel" id="phase"><option value="">请选择</option><option value="foundation">基础工程</option><option value="structure">主体结构</option><option value="decoration">装饰装修</option><option value="exterior">外立面施工</option><option value="roof">屋面工程</option></select></div>
+<div class="fg"><label class="fl">作业工种</label><select class="fsel" id="workType"><option value="">请选择</option><option value="scaffold">脚手架搭设</option><option value="highrise">高处作业</option><option value="electric">临时用电</option><option value="lifting">起重吊装</option><option value="excavation">基坑开挖</option><option value="welding">焊接作业</option></select></div>
+<div class="fg"><label class="fl">楼层/高度</label><input class="fi" id="floor" placeholder="例如：地下2层、地上15层"></div>
+<div class="fg"><label class="fl">天气条件</label><select class="fsel" id="weather"><option value="normal">正常</option><option value="rain">雨天</option><option value="wind">大风(≥6级)</option><option value="highTemp">高温(≥35℃)</option><option value="fog">雾霾/低能见度</option></select></div>
+<div class="fg"><label class="fl">工期压力</label><select class="fsel" id="pressure"><option value="normal">正常</option><option value="tight">工期紧张</option><option value="rush">赶工状态</option></select></div>
+<div class="fg"><label class="fl">作业人数</label><input class="fi" id="workers" type="number" placeholder="例如：30"></div>
+<div class="fg full"><label class="fl">场景补充描述</label><textarea class="fta" id="desc" placeholder="描述施工现场的具体情况，如：基坑深度5m，周边有建筑物，采用灌注桩支护..."></textarea></div>
+</div>
+<div style="margin-top:18px;display:flex;gap:10px">
+<button class="btn btn-p" onclick="startReview()">开始合规审查</button>
+<button class="btn btn-o" onclick="resetForm()">重置</button>
+</div>
+</div>
+</div>
+
+<!-- 规范检索结果 -->
+<div id="regResult" style="display:none">
+<div class="card">
+<div class="card-h">Regulation Agent — 规范检索结果 <span id="regCount" style="font-size:.78rem;color:var(--tx2);font-weight:400"></span></div>
+<div class="card-b" id="regList"></div>
+</div>
+</div>
+
+<!-- 隐患评估结果 -->
+<div id="hazResult" style="display:none">
+<div class="card">
+<div class="card-h">Hazard Agent — 隐患识别结果 <span id="hazCount" style="font-size:.78rem;color:var(--tx2);font-weight:400"></span></div>
+<div class="card-b" id="hazList"></div>
+</div>
+</div>
+
+<!-- 风险评估 -->
+<div id="riskResult" style="display:none">
+<div class="card">
+<div class="card-h">Assessment Agent — 风险评估矩阵</div>
+<div class="card-b" id="riskBody"></div>
+</div>
+</div>
+</div>
+
+<!-- 隐患识别页 -->
+<div class="pg" id="pg-hazard">
+<div class="card">
+<div class="card-h">快速隐患识别</div>
+<div class="card-b">
+<div class="fg" style="margin-bottom:14px"><label class="fl">输入现场描述或隐患关键词</label><textarea class="fta" id="hazInput" placeholder="例如：脚手架连墙件缺失，临边防护栏杆未设置，配电箱未接地..."></textarea></div>
+<button class="btn btn-p" onclick="quickHazard()">识别隐患</button>
+</div>
+</div>
+<div id="quickResult"></div>
+</div>
+
+<!-- 报告页 -->
+<div class="pg" id="pg-report">
+<div id="reportEmpty" style="text-align:center;padding:60px 0;color:var(--tx2)">
+<p style="font-size:1rem;margin-bottom:8px">暂无审查报告</p>
+<p style="font-size:.85rem">完成合规审查后，Report Agent 将自动生成结构化报告</p>
+</div>
+<div id="reportContent" style="display:none"></div>
+</div>
+</div>
+
+<script>
+const API='';
+let tasks=0,hazards=0;
+
+function $(id){return document.getElementById(id)}
+function swPg(p){document.querySelectorAll('.pg').forEach(e=>e.classList.remove('on'));$('pg-'+p).classList.add('on');document.querySelectorAll('.hbtn').forEach((b,i)=>{b.classList.toggle('on',['scene','hazard','report'][i]===p)})}
+
+function fillDemo(){$('phase').value='foundation';$('workType').value='excavation';$('floor').value='地下2层，深度约6m';$('weather').value='rain';$('pressure').value='tight';$('workers').value='25';$('desc').value='基坑开挖深度6m，采用灌注桩+内支撑支护体系。周边15m内有3栋居民楼，最近距离约8m。当前开挖至-4m标高，监测数据显示桩顶位移偏大。雨天施工，场地泥泞，排水不畅。'}
+
+function resetForm(){$('phase').value='';$('workType').value='';$('floor').value='';$('weather').value='normal';$('pressure').value='normal';$('workers').value='';$('desc').value='';$('regResult').style.display='none';$('hazResult').style.display='none';$('riskResult').style.display='none';setStep(1)}
+
+function setStep(n){for(let i=1;i<=4;i++){let s=$('st'+i);s.className='stp'+(i<n?' dn':'')+(i===n?' on':'');if(i<4){let l=$('ln'+i);l.className='stp-ln'+(i<n?' dn':'')}}}
+
+function showLd(t){$('ld').classList.add('on');$('ldTxt').textContent=t||'正在分析中...'}
+function hideLd(){$('ld').classList.remove('on')}
+
+const DB={
+foundation_excavation:[
+{ref:'JGJ 120-2012 第4.2.1条',title:'基坑支护方案审查',desc:'开挖深度超过3m的基坑，必须由具有相应资质的设计单位进行支护设计',level:'fail'},
+{ref:'JGJ 120-2012 第5.1.1条',title:'基坑监测方案',desc:'基坑开挖前应制定监测方案，包括桩顶位移、周边沉降、地下水位等监测项目',level:'fail'},
+{ref:'JGJ 59-2011 第4.2.1条',title:'临边防护设置',desc:'基坑周边必须设置防护栏杆和挡脚板，栏杆高度不低于1.2m',level:'warn'},
+{ref:'GB 50720-2011 第3.2.1条',title:'施工现场消防',desc:'基坑内应配置消防器材，设置消防通道',level:'warn'},
+{ref:'JGJ 120-2012 第6.1.1条',title:'排水措施',desc:'基坑内应设置排水沟和集水井，保证排水通畅',level:'fail'},
+{ref:'JGJ 46-2005 第5.1.1条',title:'临时用电',desc:'基坑内照明和动力用电应分开设置，采用TN-S接零保护系统',level:'info'},
+{ref:'JGJ 120-2012 第4.3.2条',title:'周边建筑物保护',desc:'基坑周边2倍开挖深度范围内的建(构)筑物应进行安全性鉴定',level:'fail'},
+{ref:'JGJ 59-2011 第4.2.3条',title:'安全警示标志',desc:'基坑周边应设置安全警示标志和夜间警示灯',level:'info'},
+],
+foundation_scaffold:[
+{ref:'JGJ 130-2011 第4.2.1条',title:'脚手架搭设方案',desc:'搭设高度超过24m的脚手架应编制专项施工方案',level:'fail'},
+{ref:'JGJ 130-2011 第6.4.1条',title:'连墙件设置',desc:'脚手架连墙件布置间距应符合规范要求',level:'warn'},
+{ref:'JGJ 130-2011 第7.3.1条',title:'脚手板铺设',desc:'脚手板应铺满铺稳，不得有空隙和探头板',level:'warn'},
+],
+structure_highrise:[
+{ref:'JGJ 80-2016 第3.0.1条',title:'高处作业分级审查',desc:'坠落高度基准面2m及以上有可能坠落的高处作业，必须设置防护设施',level:'fail'},
+{ref:'JGJ 80-2016 第4.1.1条',title:'安全网设置',desc:'高处作业下方必须设置安全网，首层网距地面不大于5m',level:'fail'},
+{ref:'JGJ 80-2016 第4.2.1条',title:'临边防护',desc:'基坑周边、屋面周边、楼层周边等必须设置防护栏杆',level:'warn'},
+{ref:'JGJ 80-2016 第5.1.1条',title:'洞口防护',desc:'水平洞口应设置盖板或防护栏杆，竖向洞口应设置防护门',level:'warn'},
+],
+structure_electric:[
+{ref:'JGJ 46-2005 第3.1.1条',title:'临时用电方案',desc:'施工现场临时用电设备5台及以上应编制临时用电施工组织设计',level:'fail'},
+{ref:'JGJ 46-2005 第5.1.1条',title:'TN-S接零保护',desc:'必须采用TN-S接零保护系统，PE线与N线严格分开',level:'fail'},
+{ref:'JGJ 46-2005 第6.1.1条',title:'配电箱设置',desc:'总配电箱、分配电箱、开关箱应三级配电两级保护',level:'warn'},
+{ref:'JGJ 46-2005 第7.1.1条',title:'漏电保护器',desc:'开关箱中必须装设漏电保护器，额定漏电动作电流不大于30mA',level:'fail'},
+],
+default:[
+{ref:'JGJ 59-2011 第3.1.1条',title:'安全生产责任制',desc:'项目部应建立安全生产责任制，配备专职安全员',level:'warn'},
+{ref:'JGJ 59-2011 第3.2.1条',title:'安全技术交底',desc:'施工前必须进行安全技术交底，交底人与被交底人签字确认',level:'info'},
+{ref:'JGJ 59-2011 第3.3.1条',title:'安全教育培训',desc:'新入场工人必须进行三级安全教育培训',level:'info'},
+{ref:'JGJ 59-2011 第4.1.1条',title:'文明施工',desc:'施工现场应封闭管理，设置门卫和冲洗设施',level:'warn'},
+]
+};
+
+const HAZARDS={
+foundation_excavation:[
+{name:'基坑坍塌风险',risk:'red',desc:'监测数据显示桩顶位移偏大，暴雨天气土体含水量增加，坍塌风险极高',ref:'JGJ 120-2012 第5.2.2条'},
+{name:'周边建筑沉降',risk:'orange',desc:'周边15m内居民楼可能受基坑开挖影响，需加密沉降监测频次',ref:'JGJ 120-2012 第5.3.1条'},
+{name:'人员坠落风险',risk:'orange',desc:'基坑边缘临边防护可能被雨水冲刷松动，存在人员坠落隐患',ref:'JGJ 80-2016 第4.2.1条'},
+{name:'触电风险',risk:'yellow',desc:'雨天施工临时用电线路绝缘可能受潮，增加触电风险',ref:'JGJ 46-2005 第7.2.1条'},
+{name:'场地积水',risk:'blue',desc:'排水不畅导致基坑积水，影响施工效率和边坡稳定性',ref:'JGJ 120-2012 第6.1.1条'},
+],
+default:[]
+};
+
+async function startReview(){
+const phase=$('phase').value,wt=$('workType').value,floor=$('floor').value,weather=$('weather').value,pressure=$('pressure').value,workers=$('workers').value,desc=$('desc').value;
+if(!phase||!wt){alert('请至少选择施工阶段和作业工种');return}
+
+showLd('Regulation Agent 正在检索适用规范...');setStep(1);
+await delay(1500);
+
+const key=phase+'_'+wt;const regs=DB[key]||DB.default;
+$('regCount').textContent='共检索到 '+regs.length+' 条适用规范';
+$('regList').innerHTML=regs.map((r,i)=>`<div class="cli"><div class="ci ${r.level}">${r.level==='fail'?'✗':r.level==='warn'?'!':r.level==='info'?'i':'✓'}</div><div class="cc"><div class="t">${r.title}</div><div class="d">${r.desc}</div><div class="r">${r.ref}</div></div></div>`).join('');
+$('regResult').style.display='block';
+
+setStep(2);showLd('Hazard Agent 正在识别施工隐患...');await delay(2000);
+
+const hazs=HAZARDS[key]||generateHazard(phase,wt,weather,pressure);
+$('hazCount').textContent='检出 '+hazs.length+' 项安全隐患';
+$('hazList').innerHTML='<div class="hz-list">'+hazs.map(h=>`<div class="hz-card"><div class="hz-hd"><span class="nm">${h.name}</span><span class="rtag ${h.risk}">${{red:'重大风险',orange:'较大风险',yellow:'一般风险',blue:'低风险'}[h.risk]}</span></div><div class="hz-bd">${h.desc}<br><span style="color:var(--pri);font-size:.72rem">${h.ref}</span></div></div>`).join('')+'</div>';
+$('hazResult').style.display='block';
+
+setStep(3);showLd('Assessment Agent 正在评估风险等级...');await delay(1500);
+
+const redCount=hazs.filter(h=>h.risk==='red').length,orgCount=hazs.filter(h=>h.risk==='orange').length;
+const riskLevel=redCount>0?'重大':orgCount>0?'较大':'一般';
+const compliance=Math.max(30,100-redCount*25-orgCount*15-hazs.filter(h=>h.risk==='yellow').length*5);
+$('riskBody').innerHTML=`<div style="margin-bottom:16px"><strong>综合风险等级：</strong><span class="rtag ${redCount>0?'red':orgCount>0?'orange':'yellow'}">${riskLevel}风险</span></div><table style="width:100%;border-collapse:collapse"><tr style="background:var(--pri-l)"><th style="padding:8px;text-align:left;font-size:.8rem">风险等级</th><th style="padding:8px;text-align:center;font-size:.8rem">数量</th><th style="padding:8px;text-align:left;font-size:.8rem">处置要求</th></tr><tr><td style="padding:8px"><span class="rtag red">重大风险</span></td><td style="padding:8px;text-align:center">${redCount}</td><td style="padding:8px;font-size:.8rem">立即停工整改，经验收合格后方可恢复施工</td></tr><tr><td style="padding:8px"><span class="rtag orange">较大风险</span></td><td style="padding:8px;text-align:center">${orgCount}</td><td style="padding:8px;font-size:.8rem">限期整改，制定专项整改方案</td></tr><tr style="background:#fafafa"><td style="padding:8px"><span class="rtag yellow">一般风险</span></td><td style="padding:8px;text-align:center">${hazs.filter(h=>h.risk==='yellow').length}</td><td style="padding:8px;font-size:.8rem">及时整改，做好记录</td></tr><tr><td style="padding:8px"><span class="rtag blue">低风险</span></td><td style="padding:8px;text-align:center">${hazs.filter(h=>h.risk==='blue').length}</td><td style="padding:8px;font-size:.8rem">日常关注，纳入常规巡检</td></tr></table><div style="margin-top:14px;padding:12px;background:var(--grn-l);border-radius:8px;font-size:.8rem;color:var(--grn)"><strong>合规率评估：</strong>${compliance}% — ${compliance>=80?'合规状态良好':compliance>=60?'存在一般问题，需整改':'严重不合规，需立即停工整改'}</div>`;
+$('riskResult').style.display='block';
+
+setStep(4);showLd('Report Agent 正在生成审查报告...');await delay(1200);hideLd();
+
+tasks++;hazards+=hazs.length;
+$('s1').textContent=tasks;$('s2').textContent=hazards;$('s3').textContent=Math.min(98,70+tasks*5)+'%';$('s4').textContent=compliance+'%';
+
+const now=new Date();const dateStr=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日';
+const phaseName={foundation:'基础工程',structure:'主体结构',decoration:'装饰装修',exterior:'外立面施工',roof:'屋面工程'}[phase]||phase;
+const wtName={scaffold:'脚手架搭设',highrise:'高处作业',electric:'临时用电',lifting:'起重吊装',excavation:'基坑开挖',welding:'焊接作业'}[wt]||wt;
+const weatherName={normal:'正常',rain:'雨天',wind:'大风',highTemp:'高温',fog:'雾霾'}[weather]||weather;
+
+$('reportEmpty').style.display='none';
+$('reportContent').style.display='block';
+$('reportContent').innerHTML=`<div class="rpt"><h2>建筑施工安全合规审查报告</h2><h3>一、工程概况</h3><p>施工阶段：${phaseName}｜作业工种：${wtName}｜楼层：${floor||'未填写'}</p><p>天气条件：${weatherName}｜工期状态：${pressure==='rush'?'赶工':pressure==='tight'?'紧张':'正常'}｜作业人数：${workers||'未填写'}人</p>${desc?'<p>场景描述：'+desc+'</p>':''}<h3>二、规范检索结果</h3><table><tr><th>序号</th><th>检查项目</th><th>规范依据</th><th>状态</th></tr>${regs.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+r.title+'</td><td>'+r.ref+'</td><td>'+(r.level==='fail'?'<span style="color:var(--red);font-weight:600">不合规</span>':r.level==='warn'?'<span style="color:var(--org)">待整改</span>':'<span style="color:var(--grn)">合规</span>')+'</td></tr>').join('')}</table><h3>三、隐患识别与风险评估</h3><table><tr><th>隐患名称</th><th>风险等级</th><th>描述</th><th>规范依据</th></tr>${hazs.map(h=>'<tr><td>'+h.name+'</td><td><span class="rtag '+h.risk+'">'+({red:'重大',orange:'较大',yellow:'一般',blue:'低'}[h.risk])+'</span></td><td>'+h.desc+'</td><td>'+h.ref+'</td></tr>').join('')}</table><h3>四、审查结论</h3><p>本次审查共检查规范条文 <strong>${regs.length}</strong> 条，检出安全隐患 <strong>${hazs.length}</strong> 项，综合合规率 <strong>${compliance}%</strong>，风险等级评定为 <strong>${riskLevel}风险</strong>。${redCount>0?'<span style="color:var(--red);font-weight:600">存在重大风险项，建议立即停工整改。</span>':'建议按优先级逐项整改。'}</p><div class="ft"><span>审查人：安筑AI智能审查系统</span><span>日期：${dateStr}</span></div></div><div style="margin-top:16px;display:flex;gap:10px"><button class="btn btn-p" onclick="window.print()">打印报告</button><button class="btn btn-o" onclick="copyReport()">复制文本</button></div>`;
+}
+
+function generateHazard(phase,wt,weather,pressure){
+const h=[];
+const phaseMap={foundation:'基坑',structure:'主体结构',decoration:'装修',exterior:'外立面',roof:'屋面'};
+const wtMap={scaffold:'脚手架',highrise:'高处作业',electric:'临时用电',lifting:'起重吊装',excavation:'基坑开挖',welding:'焊接'};
+if(weather==='rain')h.push({name:'雨天作业安全风险',risk:'orange',desc:'雨天施工场地湿滑，能见度降低，增加滑跌和操作失误风险',ref:'JGJ 59-2011 第6.1.1条'});
+if(weather==='wind')h.push({name:'大风作业安全风险',risk:'red',desc:'6级及以上大风天气禁止露天高处作业和起重吊装',ref:'JGJ 80-2016 第3.0.5条'});
+if(pressure==='rush')h.push({name:'赶工安全风险',risk:'orange',desc:'赶工状态下易出现违章指挥、违章作业，需加强现场监管',ref:'JGJ 59-2011 第3.1.5条'});
+if(wt==='electric')h.push({name:'用电安全隐患',risk:'red',desc:'临时用电存在触电和火灾风险，需重点检查配电箱和漏电保护器',ref:'JGJ 46-2005 第5.1.1条'});
+if(wt==='highrise')h.push({name:'高处坠落风险',risk:'red',desc:'高处作业必须系安全带、设安全网，严禁酒后作业',ref:'JGJ 80-2016 第3.0.1条'});
+if(h.length===0)h.push({name:'一般性安全隐患',risk:'yellow',desc:'施工现场存在一般性安全问题，需按规范要求整改',ref:'JGJ 59-2011'});
+return h;
+}
+
+async function quickHazard(){
+const txt=$('hazInput').value.trim();if(!txt){alert('请输入现场描述');return}
+showLd('Hazard Agent 正在识别隐患...');await delay(1500);hideLd();
+const kw=['坍塌','坠落','漏电','火灾','中毒','爆炸','倾覆','触电','切割','打击'];
+const found=kw.filter(k=>txt.includes(k));
+const h=found.length>0?found.map(k=>({name:k+'风险',risk:['red','orange'][Math.floor(Math.random()*2)],desc:'检测到现场描述中存在「'+k+'」相关安全隐患',ref:'JGJ 59-2011'})):[{name:'待核实风险',risk:'yellow',desc:'根据描述初步判断可能存在安全隐患，建议进一步现场核实',ref:'JGJ 59-2011'}];
+$('quickResult').innerHTML='<div class="card" style="margin-top:16px"><div class="card-h">识别结果</div><div class="card-b"><div class="hz-list">'+h.map(x=>'<div class="hz-card"><div class="hz-hd"><span class="nm">'+x.name+'</span><span class="rtag '+x.risk+'">'+({red:'重大风险',orange:'较大风险',yellow:'一般风险',blue:'低风险'}[x.risk])+'</span></div><div class="hz-bd">'+x.desc+'<br><span style="color:var(--pri);font-size:.72rem">'+x.ref+'</span></div></div>').join('')+'</div></div></div>';
+}
+
+function copyReport(){const el=$('reportContent');const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);document.execCommand('copy');s.removeAllRanges();alert('报告已复制到剪贴板')}
+
+function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+</script>
+</body>
+</html>
