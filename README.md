@@ -152,7 +152,7 @@ anzhu-ai/
 
 ## 致谢
 
-本系统基于 [小米 MiMo](https://github.com/XiaoMi/MiMo) 模型驱动，感谢小米开源团队提供的优秀基础模型。
+本系统基于 [open ai] chat gpt 模型驱动，感谢open ai 团队提供的优秀基础模型。
 
 ## License
 
